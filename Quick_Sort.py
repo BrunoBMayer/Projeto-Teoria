@@ -1,105 +1,133 @@
-import random
 import time
 import math
-import csv
-import sys
+import random
 
-sys.setrecursionlimit(2000000)
+def troca(a, b):
+    aux = a
+    a = b
+    b = aux
+    return a, b
 
+def particiona(v, inicio, fim, mode):
+    if mode == 2:
+        pivo = v[inicio]
+    else:
+        pivo = v[(inicio + fim) // 2]
 
-def partition(arr, low, high):
-    rand_index = random.randint(low, high)
-    arr[high], arr[rand_index] = arr[rand_index], arr[high]
-    pivot = arr[high]
-    i = low - 1
-    for j in range(low, high):
-        if arr[j] <= pivot:
+    i = inicio
+    j = fim
+
+    while i <= j:
+        while v[i] < pivo:
             i += 1
-            arr[i], arr[j] = arr[j], arr[i]
-    arr[i + 1], arr[high] = arr[high], arr[i + 1]
-    return i + 1
+        while v[j] > pivo:
+            j -= 1
+        if i <= j:
+            v[i], v[j] = troca(v[i], v[j])
+            i += 1
+            j -= 1
+    return i
 
+def quicksort(v, inicio, fim, mode):
+    if inicio < fim:
+        meio = particiona(v, inicio, fim, mode)
+        quicksort(v, inicio, meio - 1, mode)
+        quicksort(v, meio, fim, mode)
 
-def quick_sort(arr, low, high):
-    stack = [(low, high)]
-    while stack:
-        l, h = stack.pop()
-        if l < h:
-            p = partition(arr, l, h)
-            if p + 1 < h:
-                stack.append((p + 1, h))
-            if l < p - 1:
-                stack.append((l, p - 1))
+def gerar_melhor_caso(arr, n):
+    for i in range(n):
+        arr[i] = i
 
+def gerar_pior_caso(arr, n):
+    for i in range(n):
+        arr[i] = i
 
-def generate_random_array(size):
-    return [random.randint(0, size * 10) for _ in range(size)]
+def repeticoes(modo, n, repeticoes_):
+    tempos = [0.0] * repeticoes_
+    soma = 0.0
 
+    for k in range(repeticoes_):
+        arr = [0] * n
 
-def generate_best_case_array(size):
-    return [i for i in range(size)]
+        if modo == 1:
+            gerar_melhor_caso(arr, n)
+        elif modo == 2:
+            gerar_pior_caso(arr, n)
+        else:
+            
+            random.seed(time.time())
+        for i in range(n):
+            arr[i] = random.randint(0, 1000000 - 1)
 
+        start = time.process_time()
+        quicksort(arr, 0, n - 1, modo)
+        end = time.process_time()
 
-def generate_worst_case_array(size):
-    return [size - i for i in range(size)]
+        tempos[k] = (end - start)
+        soma += tempos[k]
 
+    media = soma / repeticoes_
 
-def run_tests():
-    tests = [
-        (1000, 'melhor'),
-        (2000, 'medio'),
-        (5000, 'pior')
-    ]
-    num_runs = 30
+    soma_quadrados = 0.0
+    for i in range(repeticoes_):
+        soma_quadrados += (tempos[i] - media) * (tempos[i] - media)
 
-    print("--- Resultados QuickSort ---")
-    print("Tamanho (N) | Caso       | Média (s) | Desvio Padrão (s)")
-    print("-------------------------------------------------------")
+    desvio = math.sqrt(soma_quadrados / repeticoes_)
 
-    results = []
+    resp = [0.0] * 3
+    resp[0] = media
+    resp[1] = desvio
+    resp[2] = soma
 
-    for size, case_type in tests:
-        execution_times = []
+    return resp
 
-        for _ in range(num_runs):
-            if case_type == 'melhor':
-                arr = generate_best_case_array(size)
-            elif case_type == 'pior':
-                arr = generate_worst_case_array(size)
-            else:
-                arr = generate_random_array(size)
+def gerar_csv(tamanhos, qtde_tamanhos, rep, nome_arquivo):
+    try:
+        csv = open(nome_arquivo, "w", encoding="utf-8")
+    except OSError:
+        print("Erro ao criar CSV!")
+        return
 
-            arr_copy = arr.copy()
-            start_time = time.time()
-            quick_sort(arr_copy, 0, len(arr_copy) - 1)
-            end_time = time.time()
-            execution_times.append(end_time - start_time)
+    csv.write("TABELAS DE RESULTADOS DO QUICKSORT\n\n")
 
-        avg_time = sum(execution_times) / num_runs
-        std_dev = math.sqrt(
-            sum((x - avg_time) ** 2 for x in execution_times) / (num_runs - 1)
-        ) if num_runs > 1 else 0
+    for i in range(qtde_tamanhos):
+        atual = tamanhos[i]
 
-        print(f"{size:<11} | {case_type:<10} | {avg_time:.6f} | {std_dev:.6f}")
+        # Melhor caso
+        csv.write(f"===== MELHOR CASO (n={atual}) =====\n")
+        csv.write("Repeticoes, Media, Desvio, Tempo total\n")
 
-        results.append({
-            'N': size,
-            'Caso': case_type,
-            'mean_time': avg_time,
-            'std_dev_time': std_dev
-        })
+        resp = repeticoes(1, atual, rep)
+        csv.write(f"{rep}, {resp[0]:.6f}, {resp[1]:.6f}, {resp[2]:.6f}\n")
 
-    with open('quicksort_results_python.csv', 'w', newline='') as csvfile:
-        fieldnames = ['N', 'Caso', 'mean_time', 'std_dev_time']
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-        writer.writeheader()
-        for result in results:
-            writer.writerow(result)
+        csv.write("\n")
 
-    print("\nArquivo gerado: quicksort_results_python.csv")
+        # Pior caso
+        csv.write(f"===== PIOR CASO (n={atual}) =====\n")
+        csv.write("Repeticoes,Media,Desvio,Tempo total\n")
 
+        resp = repeticoes(2, atual, rep)
+        csv.write(f"{rep},{resp[0]:.6f},{resp[1]:.6f},{resp[2]:.6f}\n")
+        print(f"Pior caso: n={atual}, repetição {rep} concluída")
+
+        csv.write("\n")
+
+        # Caso médio
+        csv.write(f"===== CASO MEDIO (n={atual}) =====\n")
+        csv.write("Repeticoes,Media,Desvio,Tempo total\n")
+
+        resp = repeticoes(3, atual, rep)
+        csv.write(f"{rep},{resp[0]:.6f},{resp[1]:.6f},{resp[2]:.6f}\n")
+
+        csv.write("\n")
+
+    csv.close()
+    print(f"Arquivo '{nome_arquivo}' gerado com sucesso!")
+
+def main():
+    n = [1000, 10000, 50000]
+    gerar_csv(n, 3, 20, "resultados.csv")
 
 if __name__ == "__main__":
-    random.seed(time.time())
-    run_tests()
-    
+    main()
+
