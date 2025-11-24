@@ -54,13 +54,13 @@ double *repeticoes(int modo, int n, int repeticoes) {
 
     double *tempos = malloc(repeticoes * sizeof(double));
     double soma = 0;
-
+   
     for (int k = 0; k < repeticoes; k++) {
         int *arr = malloc(n * sizeof(int));
 
         if (modo == 1) gerar_melhor_caso(arr, n);
         else if (modo == 2) gerar_pior_caso(arr, n);
-        else for (int i = 0; i < n; i++) arr[i] = rand() % 1000000;
+        else  srand(time(NULL)); for (int i = 0; i < n; i++) arr[i] = rand() % 1000000;
 
         clock_t start = clock();
         quicksort(arr, 0, n - 1, modo);
@@ -88,7 +88,7 @@ double *repeticoes(int modo, int n, int repeticoes) {
     free(tempos);
     return resp;
 }
-void gerar_csv(int *tamanhos, int qtde_tamanhos, int rep_min, int rep_max, const char *nome_arquivo) {
+void gerar_csv(int *tamanhos, int qtde_tamanhos,  int rep, const char *nome_arquivo) {
     FILE *csv = fopen(nome_arquivo, "w");
     if (!csv) {
         printf("Erro ao criar CSV!\n");
@@ -103,32 +103,32 @@ void gerar_csv(int *tamanhos, int qtde_tamanhos, int rep_min, int rep_max, const
         // Melhor caso
         fprintf(csv, "===== MELHOR CASO (n=%d) =====\n", atual);
         fprintf(csv, "Repeticoes, Media, Desvio, Tempo total\n");
-        for (int r = rep_min; r <= rep_max; r++) {
-            double *resp = repeticoes(1, atual, r);
-            fprintf(csv, "%d, %.6f, %.6f, %.6f\n", r, resp[0], resp[1], resp[2]);
+        
+            double *resp = repeticoes(1, atual, rep);
+            fprintf(csv, "%d, %.6f, %.6f, %.6f\n", rep, resp[0], resp[1], resp[2]);
             free(resp);
-        }
+        
         fprintf(csv, "\n");
 
         // Pior caso
         fprintf(csv, "===== PIOR CASO (n=%d) =====\n", atual);
         fprintf(csv, "Repeticoes,Media,Desvio,Tempo total\n");
-        for (int r = rep_min; r <= rep_max; r++) {
-            double *resp = repeticoes(2, atual, r);
-            fprintf(csv, "%d,%.6f,%.6f,%.6f\n", r, resp[0], resp[1], resp[2]);
-             printf("Pior caso: n=%d, repetição %d concluída\n", atual, r);
+        
+            double *resp = repeticoes(2, atual, rep);
+            fprintf(csv, "%d,%.6f,%.6f,%.6f\n", rep, resp[0], resp[1], resp[2]);
+             printf("Pior caso: n=%d, repetição %d concluída\n", atual, rep);
             free(resp);
-        }
+        
         fprintf(csv, "\n");
 
         // Caso médio
         fprintf(csv, "===== CASO MEDIO (n=%d) =====\n", atual);
         fprintf(csv, "Repeticoes,Media,Desvio,Tempo total\n");
-        for (int r = rep_min; r <= rep_max; r++) {
-            double *resp = repeticoes(3, atual, r);
-            fprintf(csv, "%d,%.6f,%.6f,%.6f\n", r, resp[0], resp[1], resp[2]);
+        
+            double *resp = repeticoes(3, atual, rep);
+            fprintf(csv, "%d,%.6f,%.6f,%.6f\n", rep, resp[0], resp[1], resp[2]);
             free(resp);
-        }
+        
         fprintf(csv, "\n");
     }
 
@@ -136,8 +136,8 @@ void gerar_csv(int *tamanhos, int qtde_tamanhos, int rep_min, int rep_max, const
     printf("Arquivo '%s' gerado com sucesso!\n", nome_arquivo);
 }
 int main() {
-    int n[3] = {1000, 5000, 100000};
-    gerar_csv(n, 3, 15, 30, "resultados.csv");
+    int n[3] = {1000, 10000, 50000};
+    gerar_csv(n, 3, 20, "resultados.csv");
     return 0;
 }
 
