@@ -1,38 +1,38 @@
 TABELAS DE RESULTADOS DO QUICKSORT
 
 ===== MELHOR CASO (n=1000) =====
-Repeticoes, Media, Desvio, Tempo total
-20, 0.001024, 0.000055, 0.020484
+Repeticoes,Media,Desvio,Tempo total
+20,0.000035,0.000001,0.000697
 
 ===== PIOR CASO (n=1000) =====
 Repeticoes,Media,Desvio,Tempo total
-20,0.001048,0.000027,0.020958
+20,0.000795,0.000154,0.015900
 
 ===== CASO MEDIO (n=1000) =====
 Repeticoes,Media,Desvio,Tempo total
-20,0.001051,0.000020,0.021013
+20,0.000068,0.000001,0.001360
 
 ===== MELHOR CASO (n=10000) =====
-Repeticoes, Media, Desvio, Tempo total
-20, 0.015278, 0.002496, 0.305557
+Repeticoes,Media,Desvio,Tempo total
+20,0.000268,0.000002,0.005359
 
 ===== PIOR CASO (n=10000) =====
 Repeticoes,Media,Desvio,Tempo total
-20,0.014257,0.000267,0.285139
+20,0.065535,0.000623,1.310696
 
 ===== CASO MEDIO (n=10000) =====
 Repeticoes,Media,Desvio,Tempo total
-20,0.014050,0.000506,0.281001
+20,0.000884,0.000016,0.017673
 
 ===== MELHOR CASO (n=50000) =====
-Repeticoes, Media, Desvio, Tempo total
-20, 0.081814, 0.001361, 1.636273
+Repeticoes,Media,Desvio,Tempo total
+20,0.001583,0.000007,0.031666
 
 ===== PIOR CASO (n=50000) =====
 Repeticoes,Media,Desvio,Tempo total
-20,0.083264,0.002330,1.665279
+20,1.714798,0.037032,34.295966
 
 ===== CASO MEDIO (n=50000) =====
 Repeticoes,Media,Desvio,Tempo total
-20,0.079754,0.002832,1.595076
+20,0.005541,0.000077,0.110819
 
