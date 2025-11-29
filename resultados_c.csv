@@ -1,38 +1,38 @@
 TABELAS DE RESULTADOS DO QUICKSORT
 
 ===== MELHOR CASO (n=1000) =====
-Repeticoes,Media,Desvio,Tempo total
-20,0.000035,0.000001,0.000697
+Repeticoes,Media,Desvio,Tempo_total
+20,0.000029,0.000001,0.000590
 
 ===== PIOR CASO (n=1000) =====
-Repeticoes,Media,Desvio,Tempo total
-20,0.000795,0.000154,0.015900
+Repeticoes,Media,Desvio,Tempo_total
+20,0.000781,0.000022,0.015617
 
 ===== CASO MEDIO (n=1000) =====
-Repeticoes,Media,Desvio,Tempo total
-20,0.000068,0.000001,0.001360
+Repeticoes,Media,Desvio,Tempo_total
+20,0.000066,0.000006,0.001324
 
 ===== MELHOR CASO (n=10000) =====
-Repeticoes,Media,Desvio,Tempo total
-20,0.000268,0.000002,0.005359
+Repeticoes,Media,Desvio,Tempo_total
+20,0.000340,0.000007,0.006796
 
 ===== PIOR CASO (n=10000) =====
-Repeticoes,Media,Desvio,Tempo total
-20,0.065535,0.000623,1.310696
+Repeticoes,Media,Desvio,Tempo_total
+20,0.083618,0.000836,1.672363
 
 ===== CASO MEDIO (n=10000) =====
-Repeticoes,Media,Desvio,Tempo total
-20,0.000884,0.000016,0.017673
+Repeticoes,Media,Desvio,Tempo_total
+20,0.001101,0.000008,0.022014
 
 ===== MELHOR CASO (n=50000) =====
-Repeticoes,Media,Desvio,Tempo total
-20,0.001583,0.000007,0.031666
+Repeticoes,Media,Desvio,Tempo_total
+20,0.001975,0.000014,0.039493
 
 ===== PIOR CASO (n=50000) =====
-Repeticoes,Media,Desvio,Tempo total
-20,1.714798,0.037032,34.295966
+Repeticoes,Media,Desvio,Tempo_total
+20,2.141834,0.049515,42.836670
 
 ===== CASO MEDIO (n=50000) =====
-Repeticoes,Media,Desvio,Tempo total
-20,0.005541,0.000077,0.110819
+Repeticoes,Media,Desvio,Tempo_total
+20,0.006727,0.000026,0.134543
 

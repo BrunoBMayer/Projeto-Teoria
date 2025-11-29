@@ -1,12 +1,13 @@
 import time
 import math
 import random
+import sys
+
+# AUMENTA O LIMITE DE RECURSÃO
+sys.setrecursionlimit(1000000)
 
 def troca(a, b):
-    aux = a
-    a = b
-    b = aux
-    return a, b
+    return b, a
 
 def particiona(v, inicio, fim, mode):
     if mode == 2:
@@ -34,19 +35,26 @@ def quicksort(v, inicio, fim, mode):
         quicksort(v, inicio, meio - 1, mode)
         quicksort(v, meio, fim, mode)
 
-def gerar_melhor_caso(arr, n):
+def gerar_melhor_caso(v, n):
     for i in range(n):
-        arr[i] = i
+        v[i] = i
 
-def gerar_pior_caso(arr, n):
+def gerar_pior_caso(v, n):
     for i in range(n):
-        arr[i] = i
+        v[i] = n - i - 1
 
-def repeticoes(modo, n, repeticoes_):
-    tempos = [0.0] * repeticoes_
+def gerar_caso_medio(v, n):
+    random.seed(42)
+    for i in range(n):
+        v[i] = random.randint(0, 1000000)
+
+def repeticoes(modo, n, rep, tamanho_index, total_tamanhos, caso_nome):
+    tempos = [0.0] * rep
     soma = 0.0
 
-    for k in range(repeticoes_):
+    print(f"\n📊 [{tamanho_index+1}/{total_tamanhos}] {caso_nome} - n={n}")
+
+    for k in range(rep):
         arr = [0] * n
 
         if modo == 1:
@@ -54,79 +62,79 @@ def repeticoes(modo, n, repeticoes_):
         elif modo == 2:
             gerar_pior_caso(arr, n)
         else:
-            
-            random.seed(time.time())
-        for i in range(n):
-            arr[i] = random.randint(0, 1000000 - 1)
+            gerar_caso_medio(arr, n)
 
         start = time.process_time()
         quicksort(arr, 0, n - 1, modo)
         end = time.process_time()
 
-        tempos[k] = (end - start)
+        tempos[k] = end - start
         soma += tempos[k]
 
-    media = soma / repeticoes_
+        # Mostra progresso a cada repetição
+        progresso = (k + 1) / rep * 100
+        print(f"   🔄 {k+1}/{rep} ({progresso:.1f}%) - Tempo: {tempos[k]:.6f}s")
+
+    media = soma / rep
 
     soma_quadrados = 0.0
-    for i in range(repeticoes_):
+    for i in range(rep):
         soma_quadrados += (tempos[i] - media) * (tempos[i] - media)
 
-    desvio = math.sqrt(soma_quadrados / repeticoes_)
+    desvio = math.sqrt(soma_quadrados / rep)
+    total = soma
 
     resp = [0.0] * 3
     resp[0] = media
     resp[1] = desvio
-    resp[2] = soma
+    resp[2] = total
+
+    print(f"   ✅ Finalizado - Média: {media:.6f}s")
 
     return resp
 
 def gerar_csv(tamanhos, qtde_tamanhos, rep, nome_arquivo):
-    try:
-        csv = open(nome_arquivo, "w", encoding="utf-8")
-    except OSError:
-        print("Erro ao criar CSV!")
-        return
+    print("🚀 INICIANDO TESTES DO QUICKSORT")
+    print(f"📁 Arquivo de saída: {nome_arquivo}")
+    print(f"🔢 Tamanhos: {tamanhos}")
+    print(f"🔄 Repetições: {rep}")
+    print(f"📈 Progresso:\n")
 
+    csv = open(nome_arquivo, "w", encoding="utf-8")
     csv.write("TABELAS DE RESULTADOS DO QUICKSORT\n\n")
 
     for i in range(qtde_tamanhos):
         atual = tamanhos[i]
 
+        print(f"========================================")
+        print(f"🎯 VETOR TAMANHO: {atual}")
+        print(f"========================================")
+
         # Melhor caso
+        resp = repeticoes(1, atual, rep, i, qtde_tamanhos, "MELHOR CASO")
         csv.write(f"===== MELHOR CASO (n={atual}) =====\n")
-        csv.write("Repeticoes, Media, Desvio, Tempo total\n")
-
-        resp = repeticoes(1, atual, rep)
-        csv.write(f"{rep}, {resp[0]:.6f}, {resp[1]:.6f}, {resp[2]:.6f}\n")
-
-        csv.write("\n")
+        csv.write("Repeticoes,Media,Desvio,Tempo_total\n")
+        csv.write(f"{rep},{resp[0]:.6f},{resp[1]:.6f},{resp[2]:.6f}\n\n")
 
         # Pior caso
+        resp = repeticoes(2, atual, rep, i, qtde_tamanhos, "PIOR CASO")
         csv.write(f"===== PIOR CASO (n={atual}) =====\n")
-        csv.write("Repeticoes,Media,Desvio,Tempo total\n")
-
-        resp = repeticoes(2, atual, rep)
-        csv.write(f"{rep},{resp[0]:.6f},{resp[1]:.6f},{resp[2]:.6f}\n")
-        print(f"Pior caso: n={atual}, repetição {rep} concluída")
-
-        csv.write("\n")
+        csv.write("Repeticoes,Media,Desvio,Tempo_total\n")
+        csv.write(f"{rep},{resp[0]:.6f},{resp[1]:.6f},{resp[2]:.6f}\n\n")
 
         # Caso médio
+        resp = repeticoes(3, atual, rep, i, qtde_tamanhos, "CASO MÉDIO")
         csv.write(f"===== CASO MEDIO (n={atual}) =====\n")
-        csv.write("Repeticoes,Media,Desvio,Tempo total\n")
-
-        resp = repeticoes(3, atual, rep)
-        csv.write(f"{rep},{resp[0]:.6f},{resp[1]:.6f},{resp[2]:.6f}\n")
-
-        csv.write("\n")
+        csv.write("Repeticoes,Media,Desvio,Tempo_total\n")
+        csv.write(f"{rep},{resp[0]:.6f},{resp[1]:.6f},{resp[2]:.6f}\n\n")
 
     csv.close()
-    print(f"Arquivo '{nome_arquivo}' gerado com sucesso!")
+    print(f"\n🎉 Arquivo '{nome_arquivo}' gerado com sucesso!")
+    print("💾 Todos os testes concluídos!")
 
 def main():
     n = [1000, 10000, 50000]
-    gerar_csv(n, 3, 20, "resultados.csv")
+    gerar_csv(n, 3, 20, "resultados_python.csv")
 
 if __name__ == "__main__":
     main()
